@@ -52,20 +52,45 @@ const devWebpackConfig = merge(baseWebpackConfig, {
           }
           let i = 0;
           let a = [];
-          while(i<3){
-            let _A= JSON.parse(data).random()
-            let b=true;
-            a.forEach((item)=>{
-              if(_A.id===item.id)b=false;
-            });
-            if(b){
-              a.push(_A)
-              i++;
+          let _data=JSON.parse(data)
+          if(_data.length>3){
+            while(i<3){
+              let _A= _data.random()
+              let b=true;
+              a.forEach((item)=>{
+                if(_A.id===item.id)b=false;
+              });
+              if(b){
+                a.push(_A)
+                i++;
+              }
             }
+          }else{
+            a=_data
           }
           res.json(a);
        });
       }),
+      app.post('/setAnswer', function (req, res) {
+        req.on("data",(data)=>{
+          let content=JSON.parse(decodeURIComponent(data));
+          fs.readFile(__dirname+'/answers.json','utf-8', function (err, data) {
+            if (err) {
+              console.error(err);
+            }
+            let answers=data?JSON.parse(data):[];
+            content.id=answers.length;
+            answers.push(content)
+            fs.writeFile(__dirname+'/answers.json', JSON.stringify(answers),  function(err) {
+              if (err) {
+                  return console.error(err);
+              }
+              res.json({status:0,statusText:"OK"});
+           });
+          })
+        })
+        //res.end("success")
+      })
       app.get('/setAnswer', function (req, res) {
         fs.readFile(__dirname+'/answers.json','utf-8', function (err, data) {
           if (err) {

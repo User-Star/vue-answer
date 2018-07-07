@@ -58,6 +58,12 @@ export default {
     this._getSubjectList();
   },
   methods: {
+    open() {
+         this.$message({
+          message: '问题添加成功',
+          type: 'success'
+        });
+    },
     _getSubjectList() {
       const url = "/getAnswerList"; 
       axios.get(url).then(res => {
@@ -71,10 +77,36 @@ export default {
          'content': this.textarea
        }
        if(!this.textarea) return
-      const url = `/setAnswer?content=${this.textarea}`; 
+      //   axios({
+      //     url:'/setAnswer',
+      //     method: 'post',
+      //     headers:{
+      //       'Content-Type':'application/x-www-form-urlencoded'
+      //     },
+      //     data:{
+      //       'content': this.textarea
+      //     },
+      //     transformRequest: [function (data) {
+      //       let ret = ''
+      //       for (let it in data) {
+      //         ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+      //       }
+      //       console.log(ret.slice(0,ret.length-1))
+      //       return ret.slice(0,ret.length-1)
+      //     }]
+
+      //   }).then((res)=>{
+      //     console.log(res)
+      //  })
+      //const url = `/setAnswer?content=${this.textarea}`; 
+      const url="/setAnswer"
       //这里用post请求 后台接收不到请求的参数
-      axios.get(url,data).then(res => {
-        console.log(res);
+      axios.post(url,data).then(res => {
+       //console.log(res.data)
+          if(res.data.status===0){
+            this.open();
+            this.textarea='';
+          }
         });
     }
   }
