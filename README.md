@@ -28,4 +28,6 @@ npm run build --report
 
 4、在Chrome中输入cmd窗口中生成的地址
 
+PS:修改问题请修改\vue-answer\build文件夹中answers.json文件中内容
+
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
