@@ -45,12 +45,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       poll: config.dev.poll,
     },
     before(app) {
-      app.get('/api/getAnswerList', function (req, res) {
+      app.get('/getAnswerList', function (req, res) {
         fs.readFile(__dirname+'/answers.json','utf-8', function (err, data) {
           if (err) {
               console.error(err);
           }
-          console.log(data)
           let i = 0;
           let a = [];
           while(i<3){
@@ -64,9 +63,23 @@ const devWebpackConfig = merge(baseWebpackConfig, {
               i++;
             }
           }
-          console.log(a)
           res.json(a);
        });
+      }),
+      app.get('/setAnswer', function (req, res) {
+        fs.readFile(__dirname+'/answers.json','utf-8', function (err, data) {
+          if (err) {
+            console.error(err);
+          }
+          let answers=data?JSON.parse(data):[];
+          answers.push({id:answers.length,content:req.query.content})
+          fs.writeFile(__dirname+'/answers.json', JSON.stringify(answers),  function(err) {
+            if (err) {
+                return console.error(err);
+            }
+            res.json(req.query);
+         });
+        })
       })
     }
   },

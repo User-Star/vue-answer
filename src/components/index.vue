@@ -4,7 +4,6 @@
     :default-active="activeIndex2"
     class="el-menu-demo"
     mode="horizontal"
-    @select="handleSelect"
     background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b">
@@ -14,7 +13,7 @@
     </el-menu>
   <el-tabs v-model="activeName2" tab-position='left' type="card">
     <el-tab-pane label="随机出题" name="first">
-        <el-button class="ref-btn" type="success" round><i class="el-icon-refresh"></i></el-button>
+        <el-button class="ref-btn" @click="_getSubjectList" type="success" round><i class="el-icon-refresh"></i></el-button>
         <el-table
             :data="Subjects"
             style="width: 100%">
@@ -33,7 +32,7 @@
                 v-model="textarea">
                 </el-input>
             <el-footer>
-                <el-button type="success" round @click="submit">Submit</el-button>
+                <el-button type="success" round @click="_setSubjectList">Submit</el-button>
             </el-footer>
         </el-container>
     </el-tab-pane>
@@ -43,6 +42,7 @@
 
 <script>
 import axios from "axios";
+import Qs from 'qs'
 export default {
   name: "index",
   data() {
@@ -59,19 +59,23 @@ export default {
   },
   methods: {
     _getSubjectList() {
-      const url = "api/getAnswerList"; 
+      const url = "/getAnswerList"; 
       axios.get(url).then(res => {
         this.Subjects=res.data;
         });
     },
-    getAnswer() {
-      console.log("click 选题");
-    },
-    submit() {
-      console.log("click 提交");
-    },
-    handleSelect(key, keyPath) {
-      //console.log(key, keyPath);
+     _setSubjectList() {
+       let param = new URLSearchParams()
+       param.append('content', this.textarea)
+       let data={
+         'content': this.textarea
+       }
+       if(!this.textarea) return
+      const url = `/setAnswer?content=${this.textarea}`; 
+      //这里用post请求 后台接收不到请求的参数
+      axios.get(url,data).then(res => {
+        console.log(res);
+        });
     }
   }
 };
